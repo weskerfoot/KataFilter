@@ -10,17 +10,10 @@
 #include "error.h"
 #include "bfilter.h"
 
-int countbits(int n) {
-  int c = 0;
-  while (n >>= 1) {
-    c++;
-  }
-  return c+1;
-}
-
 int
-printbits(int n) {
-  int c = countbits(n);
+printbits(bit_array_t *barr) {
+  int c = barr->num_elems;
+  int n = barr->arr[0];
   int i = c-1;
 
   while (n >= 2) {
@@ -32,19 +25,27 @@ printbits(int n) {
   return 0;
 }
 
-int*
+bit_array_t*
 new_bitarray(int size) {
-  int *barray = malloc((sizeof (int)) * size);
+  int width = (size/32) + 1;
+  int *barray = malloc((sizeof (int)) * width);
 
-  for(int i = 0; i < size; i++) {
+  bit_array_t *result = malloc(sizeof (bit_array_t));
+
+  result->num_ints = width;
+  result->num_elems = size;
+
+  for(int i = 0; i < width; i++) {
     barray[i] = 0;
   }
 
-  return barray;
+  result->arr = barray;
+
+  return result;
 }
 
 int
-setbit(int* arr, int k) {
+setbit(bit_array_t* arr, int k) {
   /* The position in the array of the int we're looking at */
   int i = k/32;
 
@@ -56,13 +57,13 @@ setbit(int* arr, int k) {
   /* Shift the flag to the position of the bit we want to set */
   flag = flag << pos;
 
-  arr[i] = arr[i] | flag;
+  arr->arr[i] = arr->arr[i] | flag;
 
   return 0;
 }
 
 int
-unsetbit(int* arr, int k) {
+unsetbit(bit_array_t* arr, int k) {
   int i = k/32;
 
   int pos = k % 32;
@@ -71,7 +72,7 @@ unsetbit(int* arr, int k) {
 
   flag = ~(flag << pos);
 
-  arr[i] = arr[i] & flag;
+  arr->arr[i] = arr->arr[i] & flag;
 
   return 0;
 }
@@ -82,19 +83,19 @@ get_index(int size, const char* value) {
 
   fnv64Init(&hval);
 
-  fnv64UpdateBuffer(&hval, value, 6);
-  return hval;
+  fnv64UpdateBuffer(&hval, value, strlen(value));
+  return hval % size;
 }
 
 int
 main (void) {
-  int *test = new_bitarray(5);
-  printbits(test[0]);
+  bit_array_t *test = new_bitarray(100);
+  printbits(test);
   setbit(test, 6);
-  printbits(test[0]);
+  printbits(test);
 
-  const char *test_string = "foobar";
-  printf("%zu\n", get_index(12, test_string));
+  const char *test_string = "what is this I can't even, lololol";
+  printf("%zu\n", get_index(5*32, test_string));
 
   return EXIT_SUCCESS;
 }
