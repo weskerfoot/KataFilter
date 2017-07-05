@@ -26,7 +26,7 @@ printbits(uint32_t n, size_t c) {
 int
 print_barray(bit_array_t *arr) {
   for(uint32_t i = 0; i < arr->num_ints; i++) {
-    printbits(arr->arr[i], arr->num_elems/arr->num_ints);
+    printbits(arr->arr[i], 32);
   }
   printf("\n");
   return 0;
@@ -97,10 +97,11 @@ get_index(int size, const char* value) {
 int
 main (void) {
   bit_array_t *test = new_bitarray(100);
-  setbit(test, 31);
-  setbit(test, 63);
-  setbit(test, 95);
-  setbit(test, 127);
+  setbit(test, 2);
+  setbit(test, 4);
+  setbit(test, 8);
+  setbit(test, 16);
+  setbit(test, 32);
   print_barray(test);
 
   const char *test_string = "what is this I can't even, lololol";
