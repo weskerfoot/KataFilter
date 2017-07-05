@@ -5,8 +5,9 @@
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
+#include <fnv.h>
+
 #include "error.h"
-#include "maa.h"
 #include "bfilter.h"
 
 int countbits(int n) {
@@ -91,6 +92,14 @@ main (void) {
   unsetbit(test, 4);
   unsetbit(test, 2);
   printbits(test[0]);
+
+  const char *test_string = "foobar";
+  uint64_t hval;
+  char result[17];
+  fnv64Init(&hval);
+  fnv64UpdateBuffer(&hval, test_string, 6);
+  fnv64ResultHex(result, &hval);
+  printf("%s\n", result);
   return EXIT_SUCCESS;
 }
 
