@@ -1,0 +1,12 @@
+prefix=/usr/local
+exec_prefix=/usr/local
+includedir=/usr/local/include
+libdir=/usr/local/lib
+
+Name: fnv
+Description: FNV Hash Function library in C
+URL: http://fnvhash.com/
+Version: 0.8.2
+Cflags: -I${includedir}
+Libs: -L${libdir} -lfnv
+Libs.private: 
