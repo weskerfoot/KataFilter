@@ -88,11 +88,11 @@ unsetbit(bit_array_t* arr, int k) {
   return 0;
 }
 
-bfilter_hashes_t
-hash(const char* value) {
+fnv_hashes_t
+hash_fnv(const char* value) {
   uint64_t hval;
 
-  bfilter_hashes_t hashes;
+  fnv_hashes_t hashes;
 
   fnv64Init(&hval);
 
@@ -107,18 +107,35 @@ hash(const char* value) {
   return hashes;
 }
 
+uint32_t
+nth_hash(fnv_hashes_t hashes,
+         uint32_t i,
+         size_t m) {
+  return (hashes.hash_1 + hashes.hash_2 * i) % m;
+}
+
+hashes_t
+hash(const char *input, uint32_t k, size_t m) {
+  fnv_hashes_t fnv = hash_fnv(input);
+  hashes_t hashes = malloc((sizeof (uint32_t)) * k);
+
+  hashes[0] = fnv.hash_1 % m;
+  hashes[1] = fnv.hash_2 % m;
+
+  for(uint32_t i = 0; i < (k-2); i++) {
+    hashes[i+2] = nth_hash(fnv, i+2, m);
+  }
+  return hashes;
+}
+
 int
 main (void) {
   bit_array_t *test = new_bitarray(100);
-  setbit(test, 31);
-  setbit(test, 63);
-  setbit(test, 95);
-  setbit(test, 127);
-  print_barray(test);
-
-  const char *test_string = "what blah is this I can't even, lololol";
-  printf("%zu\n", hash(test_string).hash_1);
-  printf("%zu\n", hash(test_string).hash_2);
+  const char *test_string = "what tf is this I can't even, lololol";
+  hashes_t hashes = hash(test_string, 5, 100);
+  for(int i = 0; i < 5; i++) {
+    printf("%zu\n", hashes[i]);
+  }
 
   return EXIT_SUCCESS;
 }
