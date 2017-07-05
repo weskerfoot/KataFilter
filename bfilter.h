@@ -23,7 +23,7 @@ bit_array_t* new_bitarray(int);
 
 fnv_hashes_t hash_fnv(const char*);
 
-uint32_t nth_hash(fnv_hashes_t, uint32_t, size_t);
+uint32_t kth_hash(fnv_hashes_t, uint32_t, size_t);
 
 hashes_t hash(const char *, uint32_t, size_t);
 

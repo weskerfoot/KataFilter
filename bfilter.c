@@ -108,7 +108,7 @@ hash_fnv(const char* value) {
 }
 
 uint32_t
-nth_hash(fnv_hashes_t hashes,
+kth_hash(fnv_hashes_t hashes,
          uint32_t i,
          size_t m) {
   return (hashes.hash_1 + hashes.hash_2 * i) % m;
@@ -123,7 +123,7 @@ hash(const char *input, uint32_t k, size_t m) {
   hashes[1] = fnv.hash_2 % m;
 
   for(uint32_t i = 0; i < (k-2); i++) {
-    hashes[i+2] = nth_hash(fnv, i+2, m);
+    hashes[i+2] = kth_hash(fnv, i+2, m);
   }
   return hashes;
 }
