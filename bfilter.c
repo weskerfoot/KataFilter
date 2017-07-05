@@ -53,6 +53,10 @@ new_bitarray(int size) {
 
 int
 setbit(bit_array_t* arr, int k) {
+  if ((uint32_t)k >= arr->num_elems) {
+    printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n", arr->num_elems, k);
+    exit(1);
+  }
   /* The position in the array of the int we're looking at */
   int i = k/32;
 
