@@ -12,5 +12,7 @@ int print_barray(bit_array_t*);
 
 bit_array_t* new_bitarray(int);
 
+uint64_t get_index(int, const char*);
+
 int setbit(bit_array_t*, int);
 int unsetbit(bit_array_t*, int);
