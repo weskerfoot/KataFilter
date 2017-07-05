@@ -40,6 +40,7 @@ printbits(int n) {
 int*
 new_bitarray(int size) {
   int *barray = malloc((sizeof (int)) * size);
+
   int i;
   for(i = 0; i < size; i++) {
     barray[i] = 0;
@@ -66,11 +67,29 @@ setbit(int* arr, int k) {
 }
 
 int
+unsetbit(int* arr, int k) {
+  int i = k/32;
+
+  int pos = k % 32;
+
+  unsigned int flag = 1;
+
+  flag = ~(flag << pos);
+
+  arr[i] = arr[i] & flag;
+
+  return 0;
+}
+
+int
 main (void) {
   int *test = new_bitarray(5);
   setbit(test, 6);
   setbit(test, 4);
   setbit(test, 2);
+  unsetbit(test, 6);
+  unsetbit(test, 4);
+  unsetbit(test, 2);
   printbits(test[0]);
   return EXIT_SUCCESS;
 }
