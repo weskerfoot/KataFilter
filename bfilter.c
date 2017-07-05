@@ -21,20 +21,14 @@ int countbits(int n) {
 int
 printbits(int n) {
   int c = countbits(n);
-  int i = c;
-  int *bits = malloc((sizeof (int)) * c);
+  int i = c-1;
 
   while (n >= 2) {
-    bits[i-1] = n & 1;
+    printf("%d", n & 1);
     i--;
     n >>= 1;
   }
-  bits[i-1] = n & 1;
-  for (int i = 0; i < c; i++) {
-    printf("%d", bits[i]);
-  }
-  printf("\n");
-  free(bits);
+  printf("%d\n", n & 1);
   return 0;
 }
 
@@ -42,10 +36,10 @@ int*
 new_bitarray(int size) {
   int *barray = malloc((sizeof (int)) * size);
 
-  int i;
-  for(i = 0; i < size; i++) {
+  for(int i = 0; i < size; i++) {
     barray[i] = 0;
   }
+
   return barray;
 }
 
@@ -82,24 +76,25 @@ unsetbit(int* arr, int k) {
   return 0;
 }
 
+uint64_t
+get_index(int size, const char* value) {
+  uint64_t hval;
+
+  fnv64Init(&hval);
+
+  fnv64UpdateBuffer(&hval, value, 6);
+  return hval;
+}
+
 int
 main (void) {
   int *test = new_bitarray(5);
+  printbits(test[0]);
   setbit(test, 6);
-  setbit(test, 4);
-  setbit(test, 2);
-  unsetbit(test, 6);
-  unsetbit(test, 4);
-  unsetbit(test, 2);
   printbits(test[0]);
 
   const char *test_string = "foobar";
-  uint64_t hval;
-  char result[17];
-  fnv64Init(&hval);
-  fnv64UpdateBuffer(&hval, test_string, 6);
-  fnv64ResultHex(result, &hval);
-  printf("%s\n", result);
+  printf("%zu\n", get_index(12, test_string));
+
   return EXIT_SUCCESS;
 }
-
