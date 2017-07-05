@@ -6,13 +6,20 @@ typedef
   }
   bit_array_t;
 
+typedef
+  struct {
+    uint32_t hash_1;
+    uint32_t hash_2;
+  }
+  bfilter_hashes_t;
+
 int printbits(uint32_t, size_t);
 
 int print_barray(bit_array_t*);
 
 bit_array_t* new_bitarray(int);
 
-uint64_t get_index(int, const char*);
+bfilter_hashes_t hash(const char*);
 
 int setbit(bit_array_t*, int);
 int unsetbit(bit_array_t*, int);

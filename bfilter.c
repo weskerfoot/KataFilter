@@ -88,14 +88,23 @@ unsetbit(bit_array_t* arr, int k) {
   return 0;
 }
 
-uint64_t
-get_index(int size, const char* value) {
+bfilter_hashes_t
+hash(const char* value) {
   uint64_t hval;
+
+  bfilter_hashes_t hashes;
 
   fnv64Init(&hval);
 
   fnv64UpdateBuffer(&hval, value, strlen(value));
-  return hval % size;
+
+  uint32_t n_0 = hval >> 32;
+  uint32_t n_1 = hval & 0x00000000ffffffff;
+
+  hashes.hash_1 = n_0;
+  hashes.hash_2 = n_1;
+
+  return hashes;
 }
 
 int
@@ -107,8 +116,9 @@ main (void) {
   setbit(test, 127);
   print_barray(test);
 
-  const char *test_string = "what is this I can't even, lololol";
-  printf("%zu\n", get_index(5*32, test_string));
+  const char *test_string = "what blah is this I can't even, lololol";
+  printf("%zu\n", hash(test_string).hash_1);
+  printf("%zu\n", hash(test_string).hash_2);
 
   return EXIT_SUCCESS;
 }
