@@ -144,20 +144,23 @@ hash(const char *input, uint32_t k, size_t m) {
   return hashes;
 }
 
-bit_array_t
+int
 bfilter_set(bit_array_t *filter,
-            const char *key) {
-  hashes_t hashes = hash(key, 5, filter->num_elems);
+            const char *key,
+            int k) {
+  hashes_t hashes = hash(key, k, filter->num_elems);
 
   for(int i = 0; i < 5; i++) {
     setbit(filter, hashes[i]);
   }
+  return 0;
 }
 
 int
 bfilter_get(bit_array_t *filter,
-            const char*key) {
-  hashes_t hashes = hash(key, 5, filter->num_elems);
+            const char*key,
+            int k) {
+  hashes_t hashes = hash(key, k, filter->num_elems);
 
   int exists = 1;
 
@@ -171,7 +174,9 @@ bfilter_get(bit_array_t *filter,
 
 int
 main (void) {
-  bit_array_t *test = empty_bfilter(35);
+  bit_array_t *test = empty_bfilter(4000);
+  int k = 20;
+
   const char *test_string = "what tf is this I can't even, lololol";
   const char *test_string2 = "tf is this I can't even, lololol";
   const char *test_string3 = "tf is blah blablablah can't even, lololol";
@@ -185,18 +190,24 @@ main (void) {
 
   const char *test_string11 = "this isn't actually in the bloom filter";
 
-  bfilter_set(test, test_string);
-  bfilter_set(test, test_string2);
-  bfilter_set(test, test_string3);
-  bfilter_set(test, test_string4);
-  bfilter_set(test, test_string5);
-  bfilter_set(test, test_string6);
-  bfilter_set(test, test_string7);
-  bfilter_set(test, test_string8);
-  bfilter_set(test, test_string9);
-  bfilter_set(test, test_string10);
+  bfilter_set(test, test_string, k);
+  bfilter_set(test, test_string2, k);
+  bfilter_set(test, test_string3, k);
+  bfilter_set(test, test_string4, k);
+  bfilter_set(test, test_string5, k);
+  bfilter_set(test, test_string6, k);
+  bfilter_set(test, test_string7, k);
+  bfilter_set(test, test_string8, k);
+  bfilter_set(test, test_string9, k);
+  bfilter_set(test, test_string11, k);
 
-  printf("%d\n", bfilter_get(test, test_string11));
+  printf("%d\n", bfilter_get(test, test_string7, k));
+  printf("%d\n", bfilter_get(test, test_string10, k));
+  printf("%d\n", bfilter_get(test, test_string10, k));
+  printf("%d\n", bfilter_get(test, test_string10, k));
+  printf("%d\n", bfilter_get(test, test_string10, k));
+  printf("%d\n", bfilter_get(test, test_string10, k));
+  printf("%d\n", bfilter_get(test, test_string10, k));
 
   print_barray(test);
 

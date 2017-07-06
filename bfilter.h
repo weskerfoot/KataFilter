@@ -29,3 +29,8 @@ hashes_t hash(const char *, uint32_t, size_t);
 
 int setbit(bit_array_t*, int);
 int unsetbit(bit_array_t*, int);
+
+int bfilter_set(bit_array_t *, const char*, int);
+int  bfilter_get(bit_array_t *, const char*, int);
+
+int getbit(bit_array_t *, int);
