@@ -132,6 +132,14 @@ kth_hash(fnv_hashes_t hashes,
 hashes_t
 hash(const char *input, uint32_t k, size_t m) {
   fnv_hashes_t fnv = hash_fnv(input);
+
+  if (k <= 2) {
+    hashes_t hashes = malloc((sizeof (uint32_t)) * 2);
+    hashes[0] = fnv.hash_1 % m;
+    hashes[1] = fnv.hash_2 % m;
+    return hashes;
+  }
+
   hashes_t hashes = malloc((sizeof (uint32_t)) * k);
 
   hashes[0] = fnv.hash_1 % m;
@@ -147,6 +155,9 @@ int
 bfilter_set(bit_array_t *filter,
             const char *key,
             int k) {
+  if (k <= 2) {
+    k = 2;
+  }
   hashes_t hashes = hash(key, k, filter->num_elems);
 
   for(int i = 0; i < k; i++) {
@@ -159,6 +170,9 @@ int
 bfilter_get(bit_array_t *filter,
             const char*key,
             int k) {
+  if (k <= 2) {
+    k = 2;
+  }
   hashes_t hashes = hash(key, k, filter->num_elems);
 
   int exists = 1;

@@ -46,9 +46,9 @@ int  bfilter_get(bit_array_t *, const char*, int);
 int getbit(bit_array_t *, int);
 """)
 
-bfilter = lib.empty_bfilter(190)
+bfilter = lib.empty_bfilter(1900)
 
-k = 10
+k = 1
 
 with open("./roadnottaken") as rnt:
     words = rnt.read().split(" ")
@@ -56,7 +56,7 @@ with open("./roadnottaken") as rnt:
         lib.bfilter_set(bfilter, word.encode("UTF-8"), k)
 
     for word in words:
-        print(lib.bfilter_get(bfilter, word.encode("UTF-8"), k))
+        lib.bfilter_get(bfilter, word.encode("UTF-8"), k)
 
     print(lib.bfilter_get(bfilter, b"wes", k))
 
