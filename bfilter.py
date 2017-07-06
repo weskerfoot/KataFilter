@@ -46,18 +46,16 @@ int  bfilter_get(bit_array_t *, const char*, int);
 int getbit(bit_array_t *, int);
 """)
 
-bfilter = lib.empty_bfilter(1900)
+class BloomFilter:
+    def __init__(self, m=40000, k=10):
+        self.m = m
+        self.k = k
 
-k = 1
+        self.bitset = lib.empty_bfilter(m)
 
-with open("./roadnottaken") as rnt:
-    words = rnt.read().split(" ")
-    for word in words:
-        lib.bfilter_set(bfilter, word.encode("UTF-8"), k)
+    def add(self, key):
+        lib.bfilter_set(self.bitset, key.encode("UTF-8"), self.k)
+        return True
 
-    for word in words:
-        lib.bfilter_get(bfilter, word.encode("UTF-8"), k)
-
-    print(lib.bfilter_get(bfilter, b"wes", k))
-
-# lib.print_barray(bfilter)
+    def __getitem__(self, key):
+        return lib.bfilter_get(self.bitset, key.encode("UTF-8"), self.k) == 1
