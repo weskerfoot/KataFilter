@@ -7,7 +7,6 @@
 int
 printbits(uint32_t n, size_t c) {
   uint32_t i = c-1;
-
   while (n >= 2) {
     printf("%d", n & 1);
     i--;
@@ -150,7 +149,7 @@ bfilter_set(bit_array_t *filter,
             int k) {
   hashes_t hashes = hash(key, k, filter->num_elems);
 
-  for(int i = 0; i < 5; i++) {
+  for(int i = 0; i < k; i++) {
     setbit(filter, hashes[i]);
   }
   return 0;
@@ -164,7 +163,7 @@ bfilter_get(bit_array_t *filter,
 
   int exists = 1;
 
-  for(int i = 0; i < 5; i++) {
+  for(int i = 0; i < k; i++) {
     if (!getbit(filter, hashes[i])) {
       exists = 0;
     }
@@ -172,6 +171,7 @@ bfilter_get(bit_array_t *filter,
   return exists;
 }
 
+#ifndef LIB
 int
 main (void) {
   bit_array_t *test = empty_bfilter(4000);
@@ -213,3 +213,4 @@ main (void) {
 
   return EXIT_SUCCESS;
 }
+#endif
