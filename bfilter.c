@@ -1,13 +1,7 @@
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
-#include <assert.h>
 #include <fnv.h>
-
-#include "error.h"
 #include "bfilter.h"
 
 int
@@ -177,14 +171,32 @@ bfilter_get(bit_array_t *filter,
 
 int
 main (void) {
-  bit_array_t *test = empty_bfilter(100);
+  bit_array_t *test = empty_bfilter(35);
   const char *test_string = "what tf is this I can't even, lololol";
   const char *test_string2 = "tf is this I can't even, lololol";
+  const char *test_string3 = "tf is blah blablablah can't even, lololol";
+  const char *test_string4 = "tf 't even, lololol";
+  const char *test_string5 = "tf aaasdasdsd't even, lololol";
+  const char *test_string6 = "asdsdfsdfsdftf aaasdasdsd't even, lololol";
+  const char *test_string7 = "weretrert ewerr eaaasdasdsd't even, lololol";
+  const char *test_string8 = "weretrert ewerr asdfert34234234even, lololol";
+  const char *test_string9 = "edsfefsdfwerr asdfert34234234even, lololol";
+  const char *test_string10 = "edsfefsdfwerr sdfdgfgdfgdfg, lololol";
+
+  const char *test_string11 = "this isn't actually in the bloom filter";
 
   bfilter_set(test, test_string);
   bfilter_set(test, test_string2);
+  bfilter_set(test, test_string3);
+  bfilter_set(test, test_string4);
+  bfilter_set(test, test_string5);
+  bfilter_set(test, test_string6);
+  bfilter_set(test, test_string7);
+  bfilter_set(test, test_string8);
+  bfilter_set(test, test_string9);
+  bfilter_set(test, test_string10);
 
-  printf("%d\n", bfilter_get(test, test_string2));
+  printf("%d\n", bfilter_get(test, test_string11));
 
   print_barray(test);
 
