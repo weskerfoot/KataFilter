@@ -19,7 +19,7 @@ int printbits(uint32_t, size_t);
 
 int print_barray(bit_array_t*);
 
-bit_array_t* new_bitarray(int);
+bit_array_t* empty_bfilter(int);
 
 fnv_hashes_t hash_fnv(const char*);
 

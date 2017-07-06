@@ -33,8 +33,8 @@ print_barray(bit_array_t *arr) {
 }
 
 bit_array_t*
-new_bitarray(int size) {
-  int width = (size/32) + 1;
+empty_bfilter(int size) {
+  int width = (size/32) + 1; // 32 for a 32 bit int
   uint32_t *barray = malloc((sizeof (int)) * width);
 
   bit_array_t *result = malloc(sizeof (bit_array_t));
@@ -52,15 +52,15 @@ new_bitarray(int size) {
 }
 
 int
-setbit(bit_array_t* arr, int k) {
+setbit(bit_array_t *arr, int k) {
   if ((uint32_t)k >= arr->num_elems) {
     printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n", arr->num_elems, k);
     exit(1);
   }
-  /* The position in the array of the int we're looking at */
+  /* The position in the int we're looking at */
   int i = k/32;
 
-  /* The position of the bit in the int itself */
+  /* The position of the int in the array */
   int pos = k % 32;
 
   unsigned int flag = 1;
@@ -74,7 +74,11 @@ setbit(bit_array_t* arr, int k) {
 }
 
 int
-unsetbit(bit_array_t* arr, int k) {
+unsetbit(bit_array_t *arr, int k) {
+  if ((uint32_t)k >= arr->num_elems) {
+    printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n", arr->num_elems, k);
+    exit(1);
+  }
   int i = k/32;
 
   int pos = k % 32;
@@ -86,6 +90,24 @@ unsetbit(bit_array_t* arr, int k) {
   arr->arr[i] = arr->arr[i] & flag;
 
   return 0;
+}
+
+int
+getbit(bit_array_t *arr, int k) {
+  int i = k/32;
+  int pos = k % 32;
+  unsigned int flag = 1;
+
+  flag = flag << pos;
+
+  if (arr->arr[i] & flag) {
+    // k-th bit is 1
+    return 1;
+  }
+  else {
+    // k-th bit is 0
+    return 0;
+  }
 }
 
 fnv_hashes_t
@@ -128,14 +150,43 @@ hash(const char *input, uint32_t k, size_t m) {
   return hashes;
 }
 
+bit_array_t
+bfilter_set(bit_array_t *filter,
+            const char *key) {
+  hashes_t hashes = hash(key, 5, filter->num_elems);
+
+  for(int i = 0; i < 5; i++) {
+    setbit(filter, hashes[i]);
+  }
+}
+
+int
+bfilter_get(bit_array_t *filter,
+            const char*key) {
+  hashes_t hashes = hash(key, 5, filter->num_elems);
+
+  int exists = 1;
+
+  for(int i = 0; i < 5; i++) {
+    if (!getbit(filter, hashes[i])) {
+      exists = 0;
+    }
+  }
+  return exists;
+}
+
 int
 main (void) {
-  bit_array_t *test = new_bitarray(100);
+  bit_array_t *test = empty_bfilter(100);
   const char *test_string = "what tf is this I can't even, lololol";
-  hashes_t hashes = hash(test_string, 5, 100);
-  for(int i = 0; i < 5; i++) {
-    printf("%zu\n", hashes[i]);
-  }
+  const char *test_string2 = "tf is this I can't even, lololol";
+
+  bfilter_set(test, test_string);
+  bfilter_set(test, test_string2);
+
+  printf("%d\n", bfilter_get(test, test_string2));
+
+  print_barray(test);
 
   return EXIT_SUCCESS;
 }
