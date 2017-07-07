@@ -1,0 +1,4 @@
+Build libfnv and do "cp ./libfnv/.libs/libfnv.so ./libfnv.so.0"
+run "make lib"
+
+Assuming everything went well, you should be able to run it in the current directory.
