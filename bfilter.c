@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fnv.h>
-#include <maa.h>
 
 #include "bfilter.h"
 
@@ -31,9 +30,9 @@ bit_array_t*
 empty_bfilter(int size) {
   int width = (size/32) + 1; // 32 for a 32 bit int
 
-  uint32_t *barray = xcalloc(width, (sizeof (int)));
+  uint32_t *barray = calloc(width, (sizeof (int)));
 
-  bit_array_t *result = xcalloc(1, sizeof (bit_array_t));
+  bit_array_t *result = calloc(1, sizeof (bit_array_t));
 
   result->arr = barray;
   result->num_ints = width;
@@ -132,13 +131,13 @@ hash(const char *input, uint32_t k, size_t m) {
   fnv_hashes_t fnv = hash_fnv(input);
 
   if (k <= 2) {
-    hashes_t hashes = xcalloc(2, (sizeof (uint32_t)));
+    hashes_t hashes = calloc(2, (sizeof (uint32_t)));
     hashes[0] = fnv.hash_1 % m;
     hashes[1] = fnv.hash_2 % m;
     return hashes;
   }
 
-  hashes_t hashes = xcalloc(k, (sizeof (uint32_t)));
+  hashes_t hashes = calloc(k, (sizeof (uint32_t)));
 
   hashes[0] = fnv.hash_1 % m;
   hashes[1] = fnv.hash_2 % m;
