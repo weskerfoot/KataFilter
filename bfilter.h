@@ -34,3 +34,5 @@ int bfilter_set(bit_array_t *, const char*, int);
 int  bfilter_get(bit_array_t *, const char*, int);
 
 int getbit(bit_array_t *, int);
+
+int release_bfilter(bit_array_t *);

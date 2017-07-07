@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fnv.h>
+#include <maa.h>
+
 #include "bfilter.h"
 
 int
@@ -28,18 +30,14 @@ print_barray(bit_array_t *arr) {
 bit_array_t*
 empty_bfilter(int size) {
   int width = (size/32) + 1; // 32 for a 32 bit int
-  uint32_t *barray = malloc((sizeof (int)) * width);
 
-  bit_array_t *result = malloc(sizeof (bit_array_t));
+  uint32_t *barray = xcalloc(width, (sizeof (int)));
 
-  result->num_ints = width;
-  result->num_elems = width*32;
-
-  for(int i = 0; i < width; i++) {
-    barray[i] = 0;
-  }
+  bit_array_t *result = xcalloc(1, sizeof (bit_array_t));
 
   result->arr = barray;
+  result->num_ints = width;
+  result->num_elems = width*32;
 
   return result;
 }
@@ -134,13 +132,13 @@ hash(const char *input, uint32_t k, size_t m) {
   fnv_hashes_t fnv = hash_fnv(input);
 
   if (k <= 2) {
-    hashes_t hashes = malloc((sizeof (uint32_t)) * 2);
+    hashes_t hashes = xcalloc(2, (sizeof (uint32_t)));
     hashes[0] = fnv.hash_1 % m;
     hashes[1] = fnv.hash_2 % m;
     return hashes;
   }
 
-  hashes_t hashes = malloc((sizeof (uint32_t)) * k);
+  hashes_t hashes = xcalloc(k, (sizeof (uint32_t)));
 
   hashes[0] = fnv.hash_1 % m;
   hashes[1] = fnv.hash_2 % m;
@@ -163,6 +161,7 @@ bfilter_set(bit_array_t *filter,
   for(int i = 0; i < k; i++) {
     setbit(filter, hashes[i]);
   }
+  free(hashes);
   return 0;
 }
 
@@ -182,7 +181,15 @@ bfilter_get(bit_array_t *filter,
       exists = 0;
     }
   }
+  free(hashes);
   return exists;
+}
+
+int
+release_bfilter(bit_array_t *filter) {
+  free(filter->arr);
+  free(filter);
+  return 0;
 }
 
 #ifndef LIB
@@ -213,6 +220,7 @@ main (void) {
   bfilter_set(test, test_string7, k);
   bfilter_set(test, test_string8, k);
   bfilter_set(test, test_string9, k);
+  bfilter_set(test, test_string10, k);
   bfilter_set(test, test_string11, k);
 
   printf("%d\n", bfilter_get(test, test_string7, k));
@@ -223,7 +231,7 @@ main (void) {
   printf("%d\n", bfilter_get(test, test_string10, k));
   printf("%d\n", bfilter_get(test, test_string10, k));
 
-  print_barray(test);
+  release_bfilter(test);
 
   return EXIT_SUCCESS;
 }
