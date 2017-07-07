@@ -186,6 +186,7 @@ bfilter_get(bit_array_t *filter,
 
 int
 release_bfilter(bit_array_t *filter) {
+  printf("Releasing bloom filter\n");
   free(filter->arr);
   free(filter);
   return 0;

@@ -44,6 +44,8 @@ int bfilter_set(bit_array_t *, const char*, int);
 int  bfilter_get(bit_array_t *, const char*, int);
 
 int getbit(bit_array_t *, int);
+
+int release_bfilter(bit_array_t *);
 """)
 
 class BloomFilter:
@@ -51,7 +53,7 @@ class BloomFilter:
         self.m = m
         self.k = k
 
-        self.bitset = lib.empty_bfilter(m)
+        self.bitset = ffi.gc(lib.empty_bfilter(m), lib.release_bfilter)
 
     def add(self, key):
         lib.bfilter_set(self.bitset, key.encode("UTF-8"), self.k)
