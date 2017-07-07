@@ -59,3 +59,16 @@ class BloomFilter:
 
     def __getitem__(self, key):
         return lib.bfilter_get(self.bitset, key.encode("UTF-8"), self.k) == 1
+
+
+with open("./roadnottaken") as rnt:
+    words = rnt.read().split(" ")
+    for word in words:
+        test.add(word)
+
+    for word in words:
+        print(test[word])
+
+    print(test["wes"])
+
+# lib.print_barray(bfilter)
