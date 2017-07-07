@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fnv.h>
-
 #include "bfilter.h"
 
 int
@@ -30,7 +29,7 @@ bit_array_t*
 empty_bfilter(int size) {
   int width = (size/32) + 1; // 32 for a 32 bit int
 
-  uint32_t *barray = calloc(width, (sizeof (int)));
+  uint32_t *barray = calloc(width, sizeof (int));
 
   bit_array_t *result = calloc(1, sizeof (bit_array_t));
 
@@ -44,7 +43,8 @@ empty_bfilter(int size) {
 int
 setbit(bit_array_t *arr, int k) {
   if ((uint32_t)k >= arr->num_elems) {
-    printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n", arr->num_elems, k);
+    printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n",
+           arr->num_elems, k);
     exit(1);
   }
   /* The position in the int we're looking at */
@@ -66,7 +66,8 @@ setbit(bit_array_t *arr, int k) {
 int
 unsetbit(bit_array_t *arr, int k) {
   if ((uint32_t)k >= arr->num_elems) {
-    printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n", arr->num_elems, k);
+    printf("Tried to set a bit beyond the current limit, limit = %zu, k = %d\nExiting...\n",
+           arr->num_elems, k);
     exit(1);
   }
   int i = k/32;
@@ -131,13 +132,13 @@ hash(const char *input, uint32_t k, size_t m) {
   fnv_hashes_t fnv = hash_fnv(input);
 
   if (k <= 2) {
-    hashes_t hashes = calloc(2, (sizeof (uint32_t)));
+    hashes_t hashes = calloc(2, sizeof (uint32_t));
     hashes[0] = fnv.hash_1 % m;
     hashes[1] = fnv.hash_2 % m;
     return hashes;
   }
 
-  hashes_t hashes = calloc(k, (sizeof (uint32_t)));
+  hashes_t hashes = calloc(k, sizeof (uint32_t));
 
   hashes[0] = fnv.hash_1 % m;
   hashes[1] = fnv.hash_2 % m;
@@ -186,7 +187,6 @@ bfilter_get(bit_array_t *filter,
 
 int
 release_bfilter(bit_array_t *filter) {
-  printf("Releasing bloom filter\n");
   free(filter->arr);
   free(filter);
   return 0;
