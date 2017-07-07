@@ -1,5 +1,5 @@
-default: bfilter.c bfilter.h
-	$(CC) -g -Wall -Wextra -std=gnu99 -Wpointer-arith -Wmissing-prototypes -lfnv -lm -L. -O3 ./bfilter.c -o test -Wl,-rpath,./;
+default:
+	$(MAKE) lib
 
 lib: bfilter.c bfilter.h
 	$(CC) -g -DLIB -c -fpic -Wall -Wextra -pedantic -Wpointer-arith -Werror -std=c99 -lfnv -lm -L. -O3 ./bfilter.c -Wl,-rpath,/;
