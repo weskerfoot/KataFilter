@@ -61,3 +61,14 @@ class BloomFilter:
 
     def __getitem__(self, key):
         return lib.bfilter_get(self.bitset, key.encode("UTF-8"), self.k) == 1
+
+
+if __name__ == "__main__":
+    test = BloomFilter()
+    print(test)
+    test.add("one")
+    test.add("two")
+    test.add("three")
+
+    assert test["three"]
+    assert not test["four"]
